@@ -20,21 +20,22 @@ export default function Navbar() {
         </Link>
 
         {/* Menu Desktop */}
-        <div className="hidden md:flex space-x-8">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `text-white font-medium uppercase tracking-wide hover:text-yellow-200 transition-all duration-300 ${
-                  isActive ? "text-yellow-100 underline underline-offset-8" : ""
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
+        <div className="hidden md:flex space-x-8 bg-black/10 px-4 py-2 rounded-2xl backdrop-blur-sm">
+  {navItems.map((item) => (
+    <NavLink
+      key={item.to}
+      to={item.to}
+      className={({ isActive }) =>
+        `text-white font-medium uppercase tracking-wide hover:text-yellow-200 transition-all duration-300 ${
+          isActive ? "text-yellow-100 underline underline-offset-8" : ""
+        }`
+      }
+    >
+      {item.label}
+    </NavLink>
+  ))}
+</div>
+
       </div>
     </nav>
   );
