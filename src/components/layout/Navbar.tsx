@@ -1,10 +1,11 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false); // 👈 pour le menu Connexion/Inscription
+  const [authOpen, setAuthOpen] = useState(false);
+  const [mobileAuthOpen, setMobileAuthOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,7 +26,7 @@ export default function Navbar() {
           Immo<span className="text-yellow-300">Gabon</span>
         </Link>
 
-        {/* Menu Desktop avec fond blanc */}
+        {/* --- Menu Desktop --- */}
         <div className="hidden md:flex items-center space-x-8 bg-white/95 px-6 py-2 rounded-full shadow-md border border-gray-200 relative">
           {navItems.map((item) => (
             <NavLink
@@ -43,7 +44,7 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {/* Dropdown Auth */}
+          {/* Dropdown Auth Desktop */}
           <div className="relative">
             <button
               onClick={() => setAuthOpen(!authOpen)}
@@ -82,7 +83,70 @@ export default function Navbar() {
             )}
           </div>
         </div>
+
+        {/* --- Bouton menu mobile --- */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden text-white focus:outline-none"
+        >
+          {open ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
+
+      {/* --- Menu Mobile --- */}
+      {open && (
+        <div className="md:hidden bg-white/95 border-t border-gray-200 shadow-md rounded-b-xl">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className="block px-6 py-3 text-blue-700 font-semibold uppercase border-b border-gray-200 hover:bg-green-50 hover:text-green-600"
+              onClick={() => setOpen(false)}
+            >
+              {item.label}
+            </NavLink>
+          ))}
+
+          {/* Dropdown mobile */}
+          <div className="px-6 py-3 border-b border-gray-200">
+            <button
+              onClick={() => setMobileAuthOpen(!mobileAuthOpen)}
+              className="flex justify-between items-center w-full text-blue-700 font-semibold uppercase hover:text-green-600"
+            >
+              Espace membre
+              <ChevronDown
+                size={18}
+                className={`ml-1 transition-transform ${
+                  mobileAuthOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {mobileAuthOpen && (
+              <div className="mt-2 ml-4 space-y-2">
+                <button
+                  onClick={() => {
+                    navigate("/connexion");
+                    setOpen(false);
+                  }}
+                  className="block w-full text-left text-blue-700 hover:text-green-600"
+                >
+                  Connexion
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/inscription");
+                    setOpen(false);
+                  }}
+                  className="block w-full text-left text-blue-700 hover:text-green-600"
+                >
+                  Inscription
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
