@@ -18,7 +18,7 @@ export default function Navbar() {
   return (
     <nav className="bg-gradient-to-r from-green-600 via-yellow-400 to-blue-600 shadow-lg fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
+        {/* --- Logo --- */}
         <Link
           to="/"
           className="text-2xl font-bold tracking-wide text-white drop-shadow-md"
@@ -32,10 +32,11 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
+              end={item.to === "/"} // ✅ Très important pour "Accueil"
               className={({ isActive }) =>
                 `font-semibold uppercase tracking-wide transition duration-300 ${
                   isActive
-                    ? "text-green-600 underline underline-offset-8"
+                    ? "text-green-600 underline underline-offset-8 font-bold"
                     : "text-blue-700 hover:text-green-600"
                 }`
               }
@@ -44,7 +45,7 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {/* Dropdown Auth Desktop */}
+          {/* --- Dropdown Auth Desktop --- */}
           <div className="relative">
             <button
               onClick={() => setAuthOpen(!authOpen)}
@@ -100,14 +101,21 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              className="block px-6 py-3 text-blue-700 font-semibold uppercase border-b border-gray-200 hover:bg-green-50 hover:text-green-600"
+              end={item.to === "/"} // ✅ Même correction ici
+              className={({ isActive }) =>
+                `block px-6 py-3 font-semibold uppercase border-b border-gray-200 transition duration-300 ${
+                  isActive
+                    ? "text-green-600 bg-green-50"
+                    : "text-blue-700 hover:bg-green-50 hover:text-green-600"
+                }`
+              }
               onClick={() => setOpen(false)}
             >
               {item.label}
             </NavLink>
           ))}
 
-          {/* Dropdown mobile */}
+          {/* --- Dropdown Auth Mobile --- */}
           <div className="px-6 py-3 border-b border-gray-200">
             <button
               onClick={() => setMobileAuthOpen(!mobileAuthOpen)}
