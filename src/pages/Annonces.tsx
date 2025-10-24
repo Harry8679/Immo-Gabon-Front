@@ -4,4 +4,4 @@ const Annonces = () => {
   )
 }
 
-export default Annonces
+export default Annonces;
