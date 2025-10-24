@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 
@@ -32,11 +32,11 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === "/"} // ✅ Très important pour "Accueil"
+              end={item.to === "/"} // ✅ Important pour la page d’accueil
               className={({ isActive }) =>
-                `font-semibold uppercase tracking-wide transition duration-300 ${
+                `font-semibold uppercase tracking-wide transition-all duration-300 ${
                   isActive
-                    ? "text-green-600 underline underline-offset-8 font-bold"
+                    ? "text-green-600 font-bold border-b-2 border-green-600 pb-1"
                     : "text-blue-700 hover:text-green-600"
                 }`
               }
@@ -87,8 +87,9 @@ export default function Navbar() {
 
         {/* --- Bouton menu mobile --- */}
         <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-white focus:outline-none"
+            onClick={() => setOpen(!open)}
+            className="md:hidden focus:outline-none p-2 rounded-lg transition-all"
+            aria-label="Ouvrir le menu"
         >
           {open ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -101,11 +102,11 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === "/"} // ✅ Même correction ici
+              end={item.to === "/"}
               className={({ isActive }) =>
                 `block px-6 py-3 font-semibold uppercase border-b border-gray-200 transition duration-300 ${
                   isActive
-                    ? "text-green-600 bg-green-50"
+                    ? "text-green-600 bg-green-50 border-l-4 border-green-600"
                     : "text-blue-700 hover:bg-green-50 hover:text-green-600"
                 }`
               }
