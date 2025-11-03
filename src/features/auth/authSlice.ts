@@ -42,5 +42,31 @@ export const RegisterUser = createAsyncThunk("auth/registerUser", async(formData
  const authSlice = createSlice({
     name: "auth",
     initialState, 
-    reducers: {}
+    reducers: {
+        logout: (state) => {
+            state.user = null;
+            localStorage.removeItem("user");
+        },
+        setUserFromStorage: (state) => {
+            const stored = localStorage.getItem("user");
+            if (stored) {
+                state.user = JSON.parse(stored);
+            }
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(RegisterUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(RegisterUser.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.user = action.payload;
+            })
+            .addCase(RegisterUser.rejected, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+    }
  });
