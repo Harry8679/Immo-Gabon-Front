@@ -14,6 +14,12 @@ interface AuthState {
     error: string | null;
 }
 
+const initialState: AuthState = {
+    user: null,
+    loading: false,
+    error: null
+}
+
 // Thunk pour l'inscription
 export const RegisterUser = createAsyncThunk("auth/registerUser", async(formData: { 
     firstName: string,
@@ -30,4 +36,10 @@ export const RegisterUser = createAsyncThunk("auth/registerUser", async(formData
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || "Erreur d'inscription");
     }
+ });
+
+ const authSlice = createSlice({
+    name: "auth",
+    initialState, 
+    reducers: {}
  });
