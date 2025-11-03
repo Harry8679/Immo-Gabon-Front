@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 interface User {
     id?: number;
@@ -33,7 +33,8 @@ export const RegisterUser = createAsyncThunk("auth/registerUser", async(formData
         });
         // On suppose que l'API renvoie un objet { message: user }
         return res.data;
-    } catch (error: any) {
+    } catch (err) {
+        const error = err as AxiosError<{ message?: string }>
         return thunkAPI.rejectWithValue(error.response?.data?.message || "Erreur d'inscription");
     }
  });
