@@ -60,13 +60,17 @@ export const RegisterUser = createAsyncThunk("auth/registerUser", async(formData
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(RegisterUser.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(RegisterUser.fulfilled, (state, action: PayloadAction<User>) => {
                 state.loading = false;
                 state.user = action.payload;
             })
-            .addCase(RegisterUser.rejected, (state, action: PayloadAction<any>) => {
+            .addCase(RegisterUser.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
-                state.error = action.payload;
-            })
+                state.error = action.payload || "Erreur inconnue";
+            });
     }
  });
+
+
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;
