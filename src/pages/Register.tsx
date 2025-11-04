@@ -9,7 +9,7 @@ export default function Register() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // État du formulaire
+  // États du formulaire
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,11 +18,11 @@ export default function Register() {
     confirmPassword: "",
   });
 
-  // État d’affichage du mot de passe
+  // États de visibilité des mots de passe
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Validation dynamique du mot de passe
+  // Validation dynamique
   const [passwordCriteria, setPasswordCriteria] = useState({
     length: false,
     lowercase: false,
@@ -41,17 +41,14 @@ export default function Register() {
     });
   }, [formData.password]);
 
-  // Vérifie la correspondance des mots de passe
   const passwordsMatch =
     formData.password.length > 0 &&
     formData.password === formData.confirmPassword;
 
-  // Gère les changements dans le formulaire
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Soumission du formulaire
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -64,7 +61,6 @@ export default function Register() {
       return;
     }
 
-    // Vérifie si tous les critères sont remplis
     if (!Object.values(passwordCriteria).every(Boolean)) {
       Swal.fire({
         title: "Mot de passe invalide",
@@ -101,90 +97,66 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100 px-4">
+    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100 px-4 py-8">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md border border-gray-100"
+        className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md border border-gray-100 flex flex-col items-center"
       >
         <h2 className="text-3xl font-bold text-center text-green-600 mb-8">
           Créez votre compte
         </h2>
 
-        {/* Champs de base */}
-        <div className="space-y-4">
-          <input
+        <div className="space-y-4 w-full">
+          <InputField
             type="text"
             name="firstName"
             placeholder="Prénom"
             value={formData.firstName}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
           />
-          <input
+          <InputField
             type="text"
             name="lastName"
             placeholder="Nom"
             value={formData.lastName}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
           />
-          <input
+          <InputField
             type="email"
             name="email"
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
           />
 
           {/* Mot de passe */}
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Mot de passe"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none pr-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-2.5 text-gray-500 hover:text-green-600"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+          <PasswordField
+            label="Mot de passe"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            show={showPassword}
+            toggle={() => setShowPassword(!showPassword)}
+          />
 
-          {/* Confirmation du mot de passe */}
-          <div className="relative">
-            <input
-              type={showConfirm ? "text" : "password"}
-              name="confirmPassword"
-              placeholder="Confirmer le mot de passe"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full border rounded-lg px-4 py-2 pr-10 focus:ring-2 outline-none ${
-                passwordsMatch
-                  ? "border-green-500 focus:ring-green-500"
-                  : "border-gray-300 focus:ring-green-500"
-              }`}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-2.5 text-gray-500 hover:text-green-600"
-            >
-              {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+          {/* Confirmation */}
+          <PasswordField
+            label="Confirmer le mot de passe"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            show={showConfirm}
+            toggle={() => setShowConfirm(!showConfirm)}
+            borderColor={
+              passwordsMatch && formData.confirmPassword
+                ? "border-green-500"
+                : formData.confirmPassword
+                ? "border-red-400"
+                : "border-gray-300"
+            }
+          />
 
-          {/* Indicateurs de mot de passe */}
+          {/* Validation dynamique */}
           <div className="mt-4 text-sm">
             <p className="font-semibold mb-2 text-gray-700">
               Le mot de passe doit contenir :
@@ -229,12 +201,12 @@ export default function Register() {
             )}
           </div>
 
-          {/* Bouton */}
+          {/* Bouton visible et centré */}
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 mt-6"
+            className="w-full bg-green-600 text-white py-2.5 mt-6 rounded-lg font-semibold hover:bg-green-700 transition duration-300 text-lg shadow-lg"
           >
-            S'inscrire
+            S’inscrire
           </button>
         </div>
       </form>
@@ -242,7 +214,50 @@ export default function Register() {
   );
 }
 
-// 🔹 Composant réutilisable pour les règles de mot de passe
+// 🔹 Champs simples
+function InputField(props: any) {
+  return (
+    <input
+      {...props}
+      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+      required
+    />
+  );
+}
+
+// 🔹 Champs de mot de passe
+function PasswordField({
+  label,
+  name,
+  value,
+  onChange,
+  show,
+  toggle,
+  borderColor = "border-gray-300",
+}: any) {
+  return (
+    <div className="relative w-full">
+      <input
+        type={show ? "text" : "password"}
+        name={name}
+        placeholder={label}
+        value={value}
+        onChange={onChange}
+        className={`w-full border ${borderColor} rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-green-500 outline-none`}
+        required
+      />
+      <button
+        type="button"
+        onClick={toggle}
+        className="absolute right-3 top-2.5 text-gray-500 hover:text-green-600"
+      >
+        {show ? <EyeOff size={20} /> : <Eye size={20} />}
+      </button>
+    </div>
+  );
+}
+
+// 🔹 Règle du mot de passe
 function PasswordRule({ isValid, text }: { isValid: boolean; text: string }) {
   return (
     <li className="flex items-center space-x-2">
@@ -251,9 +266,7 @@ function PasswordRule({ isValid, text }: { isValid: boolean; text: string }) {
       ) : (
         <XCircle size={16} className="text-red-500" />
       )}
-      <span className={isValid ? "text-green-600" : "text-red-500"}>
-        {text}
-      </span>
+      <span className={isValid ? "text-green-600" : "text-red-500"}>{text}</span>
     </li>
   );
 }
