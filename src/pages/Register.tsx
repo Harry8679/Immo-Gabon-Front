@@ -5,6 +5,25 @@ import { RegisterUser } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+// 🔹 Types
+interface InputFieldProps {
+  type: string;
+  name: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface PasswordFieldProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  show: boolean;
+  toggle: () => void;
+  borderColor?: string;
+}
+
 export default function Register() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -39,7 +58,7 @@ export default function Register() {
       uppercase: /[A-Z]/.test(password),
       number: /[0-9]/.test(password),
     });
-  }, [formData, formData.password]);
+  }, [formData.password]);
 
   const passwordsMatch =
     formData.password.length > 0 &&
@@ -97,7 +116,7 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] bg-linear-to-br from-green-100 via-yellow-50 to-blue-100 px-4 py-8">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100 px-4 py-12">
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md border border-gray-100 flex flex-col items-center"
@@ -214,18 +233,28 @@ export default function Register() {
   );
 }
 
-// 🔹 Champs simples
-function InputField(props: any) {
+// 🔹 Composant champ simple
+function InputField({
+  type,
+  name,
+  placeholder,
+  value,
+  onChange,
+}: InputFieldProps) {
   return (
     <input
-      {...props}
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
       required
     />
   );
 }
 
-// 🔹 Champs de mot de passe
+// 🔹 Composant champ mot de passe
 function PasswordField({
   label,
   name,
@@ -234,7 +263,7 @@ function PasswordField({
   show,
   toggle,
   borderColor = "border-gray-300",
-}: any) {
+}: PasswordFieldProps) {
   return (
     <div className="relative w-full">
       <input
@@ -257,7 +286,7 @@ function PasswordField({
   );
 }
 
-// 🔹 Règle du mot de passe
+// 🔹 Composant règle de mot de passe
 function PasswordRule({ isValid, text }: { isValid: boolean; text: string }) {
   return (
     <li className="flex items-center space-x-2">
