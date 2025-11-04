@@ -71,6 +71,30 @@ export const RegisterUser = createAsyncThunk<
   }
 );
 
+// Thunk pour la connexion
+export const LoginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (
+    formData: { email: string; password: string },
+    thunkAPI
+  ) => {
+    try {
+      const res = await axios.post("http://localhost:8001/api/login", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      // On suppose que l'API renvoie { token, user }
+      localStorage.setItem("user", JSON.stringify(res.data));
+      return res.data;
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Erreur de connexion"
+      );
+    }
+  }
+);
+
+
 /* -----------------------------
    🧩 4. Slice Redux
 ------------------------------ */
