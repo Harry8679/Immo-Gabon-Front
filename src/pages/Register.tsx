@@ -1,29 +1,87 @@
-import { useState, type FormEvent } from "react";
-import { useAppDispatch, useAppSelector } from "../store/hook";
+import { useState, useEffect, type FormEvent } from "react";
+import { Eye, EyeOff, CheckCircle, XCircle } from "lucide-react";
+import { useAppDispatch } from "../store/hooks";
 import { RegisterUser } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import type { RootState } from "../store/store";
 
 export default function Register() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useAppSelector((state: RootState) => state.auth);
 
+  // État du formulaire
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
+  // État d’affichage du mot de passe
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // Validation dynamique du mot de passe
+  const [passwordCriteria, setPasswordCriteria] = useState({
+    length: false,
+    lowercase: false,
+    uppercase: false,
+    number: false,
+  });
+
+  // Vérifie les critères du mot de passe
+  useEffect(() => {
+    const { password } = formData;
+    setPasswordCriteria({
+      length: password.length >= 8,
+      lowercase: /[a-z]/.test(password),
+      uppercase: /[A-Z]/.test(password),
+      number: /[0-9]/.test(password),
+    });
+  }, [formData.password]);
+
+  // Vérifie la correspondance des mots de passe
+  const passwordsMatch =
+    formData.password.length > 0 &&
+    formData.password === formData.confirmPassword;
+
+  // Gère les changements dans le formulaire
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Soumission du formulaire
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const result = await dispatch(RegisterUser(formData));
+
+    if (!passwordsMatch) {
+      Swal.fire({
+        title: "Erreur",
+        text: "Les mots de passe ne correspondent pas.",
+        icon: "error",
+      });
+      return;
+    }
+
+    // Vérifie si tous les critères sont remplis
+    if (!Object.values(passwordCriteria).every(Boolean)) {
+      Swal.fire({
+        title: "Mot de passe invalide",
+        text: "Votre mot de passe ne respecte pas les critères de sécurité.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    const result = await dispatch(
+      RegisterUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      })
+    );
 
     if (RegisterUser.fulfilled.match(result)) {
       Swal.fire({
@@ -35,7 +93,7 @@ export default function Register() {
     } else {
       Swal.fire({
         title: "Erreur 😕",
-        text: result.payload || "Une erreur est survenue.",
+        text: (result.payload as string) || "Une erreur est survenue.",
         icon: "error",
         confirmButtonColor: "#dc2626",
       });
@@ -43,15 +101,16 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100 px-4">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-xl rounded-2xl px-8 py-10 w-full max-w-md border border-gray-200"
+        className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md border border-gray-100"
       >
         <h2 className="text-3xl font-bold text-center text-green-600 mb-8">
           Créez votre compte
         </h2>
 
+        {/* Champs de base */}
         <div className="space-y-4">
           <input
             type="text"
@@ -80,29 +139,121 @@ export default function Register() {
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
             required
           />
-          <input
-            type="password"
-            name="password"
-            placeholder="Mot de passe"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
-          />
 
+          {/* Mot de passe */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Mot de passe"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-2.5 text-gray-500 hover:text-green-600"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+
+          {/* Confirmation du mot de passe */}
+          <div className="relative">
+            <input
+              type={showConfirm ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirmer le mot de passe"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={`w-full border rounded-lg px-4 py-2 pr-10 focus:ring-2 outline-none ${
+                passwordsMatch
+                  ? "border-green-500 focus:ring-green-500"
+                  : "border-gray-300 focus:ring-green-500"
+              }`}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-2.5 text-gray-500 hover:text-green-600"
+            >
+              {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+
+          {/* Indicateurs de mot de passe */}
+          <div className="mt-4 text-sm">
+            <p className="font-semibold mb-2 text-gray-700">
+              Le mot de passe doit contenir :
+            </p>
+            <ul className="space-y-1">
+              <PasswordRule
+                isValid={passwordCriteria.length}
+                text="Au moins 8 caractères"
+              />
+              <PasswordRule
+                isValid={passwordCriteria.lowercase}
+                text="Une lettre minuscule"
+              />
+              <PasswordRule
+                isValid={passwordCriteria.uppercase}
+                text="Une lettre majuscule"
+              />
+              <PasswordRule
+                isValid={passwordCriteria.number}
+                text="Un chiffre"
+              />
+            </ul>
+
+            {formData.confirmPassword.length > 0 && (
+              <div className="mt-2 flex items-center space-x-2">
+                {passwordsMatch ? (
+                  <>
+                    <CheckCircle size={18} className="text-green-600" />
+                    <span className="text-green-600 text-sm">
+                      Les mots de passe correspondent ✅
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle size={18} className="text-red-600" />
+                    <span className="text-red-600 text-sm">
+                      Les mots de passe ne correspondent pas
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Bouton */}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:bg-gray-400"
+            className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 mt-6"
           >
-            {loading ? "Création du compte..." : "S'inscrire"}
+            S'inscrire
           </button>
-
-          {error && (
-            <p className="text-center text-red-600 mt-2 font-medium">{error}</p>
-          )}
         </div>
       </form>
     </div>
+  );
+}
+
+// 🔹 Composant réutilisable pour les règles de mot de passe
+function PasswordRule({ isValid, text }: { isValid: boolean; text: string }) {
+  return (
+    <li className="flex items-center space-x-2">
+      {isValid ? (
+        <CheckCircle size={16} className="text-green-600" />
+      ) : (
+        <XCircle size={16} className="text-red-500" />
+      )}
+      <span className={isValid ? "text-green-600" : "text-red-500"}>
+        {text}
+      </span>
+    </li>
   );
 }
