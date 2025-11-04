@@ -227,6 +227,15 @@ export default function Register() {
           >
             S’inscrire
           </button>
+          <p className="text-sm text-gray-600 text-center mt-4">
+            Avez-vous déjà un compte ?{" "}
+            <span
+              onClick={() => navigate("/connexion")}
+              className="text-green-600 font-semibold hover:underline cursor-pointer"
+            >
+              Connectez-vous
+            </span>
+          </p>
         </div>
       </form>
     </div>
