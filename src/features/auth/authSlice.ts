@@ -133,7 +133,21 @@ const authSlice = createSlice({
       .addCase(RegisterUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Erreur inconnue";
+      })
+      .addCase(LoginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        })
+        .addCase(LoginUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        })
+        .addCase(LoginUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+
   },
 });
 
