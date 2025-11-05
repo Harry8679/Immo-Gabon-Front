@@ -52,6 +52,7 @@ export const RegisterUser = createAsyncThunk<
   "auth/registerUser",
   async (formData, thunkAPI) => {
     try {
+      console.log("📤 Données envoyées au backend :", formData);
       const res = await axios.post("http://localhost:8001/api/register", formData, {
         headers: { "Content-Type": "application/json" },
       });
