@@ -58,7 +58,7 @@ export default function Register() {
       uppercase: /[A-Z]/.test(password),
       number: /[0-9]/.test(password),
     });
-  }, [formData.password]);
+  }, [formData, formData.password]);
 
   const passwordsMatch =
     formData.password.length > 0 &&
@@ -116,7 +116,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100 px-4 py-12">
+    <div className="min-h-screen flex justify-center items-center bg-linear-to-br from-green-100 via-yellow-50 to-blue-100 px-4 py-12">
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md border border-gray-100 flex flex-col items-center"
