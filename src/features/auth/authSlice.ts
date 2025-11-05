@@ -45,31 +45,29 @@ const initialState: AuthState = {
 ------------------------------ */
 
 export const RegisterUser = createAsyncThunk<
-  User, // ✅ Ce que le thunk retourne quand tout va bien
-  RegisterForm, // ✅ Les données envoyées à l’API
-  { rejectValue: string } // ✅ Type d’erreur si l’API échoue
+  User,
+  RegisterForm,
+  { rejectValue: string }
 >(
   "auth/registerUser",
   async (formData, thunkAPI) => {
     try {
-      const res = await axios.post<{ message: string; user: User }>(
-        "http://localhost:8001/api/register",
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const res = await axios.post("http://localhost:8001/api/register", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-      // ✅ on suppose que ton API renvoie { message: "ok", user: {...} }
-      return res.data.user;
+      console.log("✅ Réponse API Register:", res.data);
+      return res.data.user; // c’est bien ici que tu récupères l’objet user
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
+      console.error("❌ Erreur API Register:", error.response?.data);
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Erreur d'inscription"
       );
     }
   }
 );
+
 
 // Thunk pour la connexion
 export const LoginUser = createAsyncThunk(
