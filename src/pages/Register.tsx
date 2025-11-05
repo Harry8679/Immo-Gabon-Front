@@ -95,6 +95,7 @@ export default function Register() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        phoneNumber: formData.phoneNumber,
         password: formData.password,
       })
     );
