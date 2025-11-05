@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Home, MapPin, Search } from "lucide-react";
+import { ArrowRight, Home as HomeIcon, MapPin, Search } from "lucide-react";
+
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100">
+    <div className="min-h-screen bg-linear-to-br from-green-100 via-yellow-50 to-blue-100">
       {/* Section Hero */}
       <section className="flex flex-col items-center justify-center text-center py-20 px-6">
         <h1 className="text-5xl md:text-6xl font-bold text-green-700 mb-4">
@@ -15,7 +16,6 @@ const Home = () => {
           La plateforme moderne pour trouver ou publier des annonces immobilières partout au Gabon 🇬🇦
         </p>
 
-        {/* Barre de recherche */}
         <div className="flex items-center bg-white shadow-lg rounded-full overflow-hidden max-w-md w-full border border-gray-200">
           <input
             type="text"
@@ -44,7 +44,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
           <div className="bg-green-50 border border-green-100 p-6 rounded-xl shadow-sm text-center">
-            <Home className="text-green-600 mx-auto mb-3" size={40} />
+            <HomeIcon className="text-green-600 mx-auto mb-3" size={40} />
             <h3 className="text-lg font-semibold mb-2">Des annonces vérifiées</h3>
             <p className="text-gray-600 text-sm">
               Toutes les annonces sont examinées pour garantir des offres réelles et fiables.
@@ -70,7 +70,7 @@ const Home = () => {
       </section>
 
       {/* Section Appel à l’action */}
-      <section className="bg-gradient-to-r from-green-600 to-blue-600 py-16 text-center text-white">
+      <section className="bg-linear-to-r from-green-600 to-blue-600 py-16 text-center text-white">
         <h2 className="text-3xl font-bold mb-4">Prêt à trouver votre nouveau logement ?</h2>
         <p className="mb-6 text-lg">
           Explorez des centaines d’annonces de maisons, appartements et terrains dès maintenant.
