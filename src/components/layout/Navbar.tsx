@@ -1,6 +1,6 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ChevronDown, Menu, X, LogOut } from "lucide-react";
+import { ChevronDown, Menu, X, LogOut, User, Edit } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function Navbar() {
@@ -11,18 +11,20 @@ export default function Navbar() {
 
   const navigate = useNavigate();
 
+  // 🔹 Charger le user depuis le localStorage au démarrage
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setUser(parsed.user || parsed); // selon ta structure
+        setUser(parsed.user || parsed);
       } catch (err) {
         console.error("Erreur de parsing du user :", err);
       }
     }
   }, []);
 
+  // 🔹 Déconnexion
   const handleLogout = () => {
     Swal.fire({
       title: "Se déconnecter ?",
@@ -47,6 +49,9 @@ export default function Navbar() {
     { label: "Annonces", to: "/annonces" },
     { label: "Publier", to: "/publier" },
   ];
+
+  // 🔹 Récupération du premier prénom
+  const firstNameOnly = user?.firstName?.split(" ")[0] || "Espace membre";
 
   return (
     <nav className="bg-linear-to-r from-green-600 via-yellow-400 to-blue-600 shadow-lg fixed top-0 w-full z-50">
@@ -78,13 +83,13 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {/* --- Auth Dropdown Desktop --- */}
+          {/* --- Auth Desktop --- */}
           <div className="relative">
             <button
               onClick={() => setAuthOpen(!authOpen)}
               className="flex items-center font-semibold uppercase tracking-wide text-blue-700 hover:text-green-600 transition"
             >
-              {user ? user.firstName : "Espace membre"}
+              {firstNameOnly}
               <ChevronDown
                 size={18}
                 className={`ml-1 transition-transform ${
@@ -93,57 +98,64 @@ export default function Navbar() {
               />
             </button>
 
-            {authOpen && (
+            {authOpen && user && (
               <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
-                {user ? (
-                  <>
-                    <div className="px-4 py-2 text-gray-700 border-b">
-                      <p className="font-semibold">{user.firstName} {user.lastName}</p>
-                      <p className="text-sm text-gray-500">{user.email}</p>
-                    </div>
+                <button
+                  onClick={() => {
+                    navigate("/profil");
+                    setAuthOpen(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
+                >
+                  <User size={16} className="mr-2" /> Voir mon profil
+                </button>
 
-                    <button
-                      onClick={() => navigate("/profil")}
-                      className="block w-full text-left px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
-                    >
-                      Mon profil
-                    </button>
+                <button
+                  onClick={() => {
+                    navigate("/modifier-profil");
+                    setAuthOpen(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
+                >
+                  <Edit size={16} className="mr-2" /> Modifier mon profil
+                </button>
 
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50"
-                    >
-                      <LogOut size={16} className="mr-2" /> Se déconnecter
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => {
-                        navigate("/connexion");
-                        setAuthOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
-                    >
-                      Connexion
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate("/inscription");
-                        setAuthOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
-                    >
-                      Inscription
-                    </button>
-                  </>
-                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50"
+                >
+                  <LogOut size={16} className="mr-2" /> Se déconnecter
+                </button>
+              </div>
+            )}
+
+            {/* Si pas connecté */}
+            {authOpen && !user && (
+              <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
+                <button
+                  onClick={() => {
+                    navigate("/connexion");
+                    setAuthOpen(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
+                >
+                  Connexion
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/inscription");
+                    setAuthOpen(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 text-blue-700 hover:bg-green-50 hover:text-green-600"
+                >
+                  Inscription
+                </button>
               </div>
             )}
           </div>
         </div>
 
-        {/* --- Bouton menu mobile --- */}
+        {/* --- Bouton Menu Mobile --- */}
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden focus:outline-none p-2 rounded-lg transition-all"
@@ -174,13 +186,13 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {/* --- Dropdown Auth Mobile --- */}
+          {/* --- Auth Mobile --- */}
           <div className="px-6 py-3 border-b border-gray-200">
             <button
               onClick={() => setMobileAuthOpen(!mobileAuthOpen)}
               className="flex justify-between items-center w-full text-blue-700 font-semibold uppercase hover:text-green-600"
             >
-              {user ? user.firstName : "Espace membre"}
+              {firstNameOnly}
               <ChevronDown
                 size={18}
                 className={`ml-1 transition-transform ${
@@ -200,7 +212,16 @@ export default function Navbar() {
                       }}
                       className="block w-full text-left text-blue-700 hover:text-green-600"
                     >
-                      Mon profil
+                      Voir mon profil
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/modifier-profil");
+                        setOpen(false);
+                      }}
+                      className="block w-full text-left text-blue-700 hover:text-green-600"
+                    >
+                      Modifier mon profil
                     </button>
                     <button
                       onClick={handleLogout}
