@@ -5,7 +5,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-100 via-yellow-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-100 via-yellow-50 to-blue-100">
       {/* Section Hero */}
       <section className="flex flex-col items-center justify-center text-center py-20 px-6">
         <h1 className="text-5xl md:text-6xl font-bold text-green-700 mb-4">
@@ -15,6 +15,7 @@ const Home = () => {
           La plateforme moderne pour trouver ou publier des annonces immobilières partout au Gabon 🇬🇦
         </p>
 
+        {/* Barre de recherche */}
         <div className="flex items-center bg-white shadow-lg rounded-full overflow-hidden max-w-md w-full border border-gray-200">
           <input
             type="text"
