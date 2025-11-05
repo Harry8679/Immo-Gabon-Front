@@ -149,6 +149,14 @@ export default function Register() {
             onChange={handleChange}
           />
 
+          <InputField
+            type="text"
+            name="phoneNumber"
+            placeholder="Numéro de téléphone"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+           />
+
           {/* Mot de passe */}
           <PasswordField
             label="Mot de passe"
