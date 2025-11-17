@@ -50,7 +50,6 @@ export default function Navbar() {
     { label: "Publier", to: "/publier" },
   ];
 
-  // 🔹 Récupération du premier prénom
   const firstNameOnly = user?.firstName?.split(" ")[0] || "Espace membre";
 
   return (
